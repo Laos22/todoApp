@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useReducer} from 'react';
+import { taskReducer } from './taskReducer';
 
 import TaskForm from './Components/taskForm';
 import TaskList from './Components/TaskList';
@@ -7,7 +8,7 @@ function App() {
 
   const [inputValue, setInputValue] = useState("");
   const [filter, setFilter] = useState("All")
-  const [tasks, setTasks] = useState(() => {
+  const [tasks, dispach] = useReducer(taskReducer, [], () => {
     const savedTasks = localStorage.getItem("tasks");
     return savedTasks ? JSON.parse(savedTasks) : [];
   })
@@ -17,7 +18,7 @@ function App() {
       alert("Введите задачу");
       return;
     }
-    setTasks([...tasks, {id: Date.now(), title: inputValue, completed: false}]);
+    dispach({type: 'ADD_TASK', payload: inputValue});
     setInputValue("");
     console.log("Добавлено: " + inputValue);
   }
@@ -27,16 +28,14 @@ function App() {
   }
 
   const onDelete = (id) => {
-    setTasks(tasks.filter(task => task.id !== id));
+    dispach({type: 'DELETE_TASK', payload: id})
     console.log("Удалено: " + id);
   }
 
   const onToggle = (id) => {
-  setTasks(tasks.map(task =>
-    task.id === id ? { ...task, completed: !task.completed } : task
-  ));
+  dispach({type: 'TOGGLE_TASK', payload: id})
   console.log("Toggle" + id)
-};
+  };
 
  
 
@@ -44,11 +43,11 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks])
 
-const filteredTasks = tasks.filter(task => {
-  if (filter === "Completed") return task.completed;
-  if (filter === "Active") return !task.completed;
-  return true;
-})
+  const filteredTasks = tasks.filter(task => {
+    if (filter === "Completed") return task.completed;
+    if (filter === "Active") return !task.completed;
+    return true;
+  })
 
   return (
     <>
