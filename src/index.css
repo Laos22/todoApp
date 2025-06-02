@@ -48,3 +48,24 @@ button {
   text-decoration: line-through;
   opacity: 0.6;
 }
+
+.filter-btn {
+  padding: 6px 12px;
+  margin: 4px;
+  border: 1px solid #ccc;
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.filter-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.filter-btn.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+  font-weight: bold;
+}

@@ -44,7 +44,11 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks])
 
-
+const filteredTasks = tasks.filter(task => {
+  if (filter === "Completed") return task.completed;
+  if (filter === "Active") return !task.completed;
+  return true;
+})
 
   return (
     <>
@@ -52,11 +56,11 @@ function App() {
     <h1>Список задач</h1>
     <TaskForm inputValue={inputValue} onAdd={addTask} onChange={onChange}/>
     <div>
-      <button onClick={() => setFilter("All")}>All</button>
-      <button onClick={() => setFilter("Completed")}>Completed</button>
-      <button onClick={() => setFilter("Active")}>Active</button>
+      <button className={filter === 'All' ? "filter-btn active" : "filter-btn"} onClick={() => setFilter("All")}>All</button>
+      <button className={filter === 'Completed' ? "filter-btn active" : "filter-btn"} onClick={() => setFilter("Completed")}>Completed</button>
+      <button className={filter === 'Active' ? "filter-btn active" : "filter-btn"} onClick={() => setFilter("Active")}>Active</button>
     </div>
-    <TaskList tasks={tasks} onDelete={onDelete} onToggle={onToggle}/>
+    <TaskList tasks={filteredTasks} onDelete={onDelete} onToggle={onToggle}/>
     
     </>
   )
