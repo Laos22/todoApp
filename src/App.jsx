@@ -5,7 +5,8 @@ import TaskList from './Components/TaskList';
 
 function App() {
 
-  const [inputValue, setInputValue] = useState("")
+  const [inputValue, setInputValue] = useState("");
+  const [filter, setFilter] = useState("All")
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem("tasks");
     return savedTasks ? JSON.parse(savedTasks) : [];
@@ -16,7 +17,7 @@ function App() {
       alert("Введите задачу");
       return;
     }
-    setTasks([...tasks, {id: Date.now(), title: inputValue}]);
+    setTasks([...tasks, {id: Date.now(), title: inputValue, completed: false}]);
     setInputValue("");
     console.log("Добавлено: " + inputValue);
   }
@@ -29,6 +30,13 @@ function App() {
     setTasks(tasks.filter(task => task.id !== id));
     console.log("Удалено: " + id);
   }
+
+  const onToggle = (id) => {
+  setTasks(tasks.map(task =>
+    task.id === id ? { ...task, completed: !task.completed } : task
+  ));
+  console.log("Toggle" + id)
+};
 
  
 
@@ -43,7 +51,12 @@ function App() {
 
     <h1>Список задач</h1>
     <TaskForm inputValue={inputValue} onAdd={addTask} onChange={onChange}/>
-    <TaskList tasks={tasks} onDelete={onDelete}/>
+    <div>
+      <button onClick={() => setFilter("All")}>All</button>
+      <button onClick={() => setFilter("Completed")}>Completed</button>
+      <button onClick={() => setFilter("Active")}>Active</button>
+    </div>
+    <TaskList tasks={tasks} onDelete={onDelete} onToggle={onToggle}/>
     
     </>
   )
