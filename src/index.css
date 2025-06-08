@@ -10,6 +10,11 @@ h1 {
   color: #333;
 }
 
+.taskForm {
+  display: flex;
+  justify-content: space-between;
+}
+
 .task {
   display: flex;
   align-items: center;
@@ -37,6 +42,12 @@ h1 {
 input[type="text"] {
   padding: 8px;
   width: 250px;
+  margin-right: 10px;
+}
+
+input[type="date"] {
+  padding: 8px;
+  width: 120px;
   margin-right: 10px;
 }
 

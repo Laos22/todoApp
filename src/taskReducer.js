@@ -10,6 +10,9 @@ export const taskReducer = (state, action) => {
             }];
         case 'DELETE_TASK':
             return state.filter(task => task.id !== action.payload);
+            
+        case 'DELETE_ALL':
+            return [];
 
         case 'TOGGLE_TASK':
             return state.map(task => 

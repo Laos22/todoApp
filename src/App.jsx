@@ -1,5 +1,6 @@
 import { useEffect, useState, useReducer} from 'react';
 import { taskReducer } from './taskReducer';
+import { DndContext } from '@dnd-kit/core';
 
 import TaskForm from './Components/taskForm';
 import TaskList from './Components/TaskList';
@@ -44,10 +45,22 @@ function App() {
     console.log("Удалено: " + id);
   }
 
+  const clearAll = () => {
+    const confirmed = window.confirm("Вы точно хотите удалить все задачи?");
+    if (confirmed) {
+      dispach({type: 'DELETE_ALL'})
+      console.log("Все удалено!!!");
+    }
+  }
+
   const onToggle = (id) => {
   dispach({type: 'TOGGLE_TASK', payload: id})
   console.log("Toggle" + id)
   };
+
+  const onDragEnd = () => {
+    
+  }
 
  
 
@@ -85,7 +98,8 @@ function App() {
   return (
     <>
     <h1>Список задач</h1>
-    <TaskForm 
+    <TaskForm
+      clearAll={clearAll} 
       inputValue={inputValue}
       dueDate={dueDate} 
       onAdd={addTask} 
@@ -98,12 +112,14 @@ function App() {
       sortType={sortType}
       setSortType={setSortType}
       />
-    <TaskList 
-      tasksNoDate={filterNoDate} 
-      tasks={sortTaskList} 
-      onDelete={onDelete} 
-      onToggle={onToggle}
-      />
+      <DndContext onDragEnd={onDragEnd}>
+          <TaskList 
+          tasksNoDate={filterNoDate} 
+          tasks={sortTaskList} 
+          onDelete={onDelete} 
+          onToggle={onToggle}
+        />
+      </DndContext>
     
     </>
   )
