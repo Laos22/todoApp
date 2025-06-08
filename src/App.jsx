@@ -3,11 +3,14 @@ import { taskReducer } from './taskReducer';
 
 import TaskForm from './Components/taskForm';
 import TaskList from './Components/TaskList';
+import ViewControls from './Components/ViewControls';
 
 function App() {
 
   const [inputValue, setInputValue] = useState("");
-  const [filter, setFilter] = useState("All")
+  const [dueDate, setDueDate] = useState(null);
+  const [filter, setFilter] = useState(localStorage.getItem('filter') || "All");
+  const [sortType, setSortType] = useState(localStorage.getItem('sortType') || "Due");
   const [tasks, dispach] = useReducer(taskReducer, [], () => {
     const savedTasks = localStorage.getItem("tasks");
     return savedTasks ? JSON.parse(savedTasks) : [];
@@ -18,13 +21,22 @@ function App() {
       alert("Введите задачу");
       return;
     }
-    dispach({type: 'ADD_TASK', payload: inputValue});
+    dispach({type: 'ADD_TASK', payload: {
+      title: inputValue, 
+      dueDate 
+    }});
     setInputValue("");
+    setDueDate(null);
     console.log("Добавлено: " + inputValue);
   }
 
   const onChange = (value) => {
     setInputValue(value);
+  }
+
+  const onChangeDate = (date) => {
+    setDueDate(date);
+    console.log(date)
   }
 
   const onDelete = (id) => {
@@ -43,23 +55,55 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks])
 
+  useEffect(() => {
+    localStorage.setItem("filter", filter);
+  }, [filter])
+
+  useEffect(() => {
+    localStorage.setItem("sortType", sortType);
+  }, [sortType])
+
   const filteredTasks = tasks.filter(task => {
     if (filter === "Completed") return task.completed;
     if (filter === "Active") return !task.completed;
     return true;
   })
 
+  const filterNoDate = filteredTasks.filter(task => !task.dueDate)
+  const filterOrderDate = filteredTasks.filter(task => task.dueDate)
+
+  const sortTaskList = [...filterOrderDate].sort((a, b) => {
+    if (sortType === "Created") {
+      return new Date(a.createdAt) - new Date(b.createdAt);
+    }
+    if (sortType === "Due") {
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    }
+    return 0;
+  })
+
   return (
     <>
-
     <h1>Список задач</h1>
-    <TaskForm inputValue={inputValue} onAdd={addTask} onChange={onChange}/>
-    <div>
-      <button className={filter === 'All' ? "filter-btn active" : "filter-btn"} onClick={() => setFilter("All")}>All</button>
-      <button className={filter === 'Completed' ? "filter-btn active" : "filter-btn"} onClick={() => setFilter("Completed")}>Completed</button>
-      <button className={filter === 'Active' ? "filter-btn active" : "filter-btn"} onClick={() => setFilter("Active")}>Active</button>
-    </div>
-    <TaskList tasks={filteredTasks} onDelete={onDelete} onToggle={onToggle}/>
+    <TaskForm 
+      inputValue={inputValue}
+      dueDate={dueDate} 
+      onAdd={addTask} 
+      onChange={onChange} 
+      onChangeDate={onChangeDate}
+      />
+    <ViewControls
+      filter={filter}
+      setFilter={setFilter}
+      sortType={sortType}
+      setSortType={setSortType}
+      />
+    <TaskList 
+      tasksNoDate={filterNoDate} 
+      tasks={sortTaskList} 
+      onDelete={onDelete} 
+      onToggle={onToggle}
+      />
     
     </>
   )

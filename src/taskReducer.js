@@ -3,8 +3,10 @@ export const taskReducer = (state, action) => {
         case 'ADD_TASK':
             return [...state, {
                 id: Date.now(),
-                title: action.payload,
-                completed: false
+                title: action.payload.title,
+                completed: false,
+                dueDate: action.payload.dueDate,
+                createdAt: new Date().toISOString()
             }];
         case 'DELETE_TASK':
             return state.filter(task => task.id !== action.payload);

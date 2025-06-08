@@ -92,3 +92,10 @@ button {
 .task {
   animation: fadeIn 0.5s ease-in;
 }
+
+.vieControls {
+  margin: 10px 0 10px 0;
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid grey;
+}
