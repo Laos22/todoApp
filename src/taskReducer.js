@@ -1,3 +1,5 @@
+import Task from "./Components/Task";
+
 export const taskReducer = (state, action) => {
     switch (action.type) {
         case 'ADD_TASK':
@@ -9,10 +11,18 @@ export const taskReducer = (state, action) => {
                 createdAt: new Date().toISOString()
             }];
         case 'DELETE_TASK':
+            console.log("Удаляем задачу - " + action.payload)
             return state.filter(task => task.id !== action.payload);
             
         case 'DELETE_ALL':
             return [];
+
+        case 'DELETE_DUE_DATE':
+            return state.map(task => 
+                task.id === action.payload
+                    ? {...task, dueDate: "" }
+                    : task
+            );
 
         case 'TOGGLE_TASK':
             return state.map(task => 

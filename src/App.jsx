@@ -42,7 +42,6 @@ function App() {
 
   const onDelete = (id) => {
     dispach({type: 'DELETE_TASK', payload: id})
-    console.log("Удалено: " + id);
   }
 
   const clearAll = () => {
@@ -55,12 +54,29 @@ function App() {
 
   const onToggle = (id) => {
   dispach({type: 'TOGGLE_TASK', payload: id})
-  console.log("Toggle" + id)
   };
 
-  const onDragEnd = () => {
-    
+  const handleDragEnd = (event) => {
+    console.log("Drag")
+    const { active, over } = event;
+
+    if (!over) return; // если не попал ни в какую зону — ничего не делаем
+
+    // const fromId = active.id;
+    const toZone = over.id;
+
+    if (toZone === "no-date") {
+  const draggedTask = tasks.find(t => t.id === active.id);
+  if (draggedTask?.dueDate) {
+    dispach({ type: "DELETE_DUE_DATE", payload: active.id });
+    console.log("Перетаскиваем:", draggedTask.title, "в зону:", toZone);
   }
+}
+
+    if (toZone === "with-date") {
+      // Пока ничего не делаем, можно позже добавить выбор даты
+    }
+  };
 
  
 
@@ -112,7 +128,7 @@ function App() {
       sortType={sortType}
       setSortType={setSortType}
       />
-      <DndContext onDragEnd={onDragEnd}>
+      <DndContext onDragEnd={handleDragEnd}>
           <TaskList 
           tasksNoDate={filterNoDate} 
           tasks={sortTaskList} 
