@@ -1,4 +1,4 @@
-import { useEffect, useState, useReducer} from 'react';
+import { useEffect, useState, useReducer, useCallback, useMemo} from 'react';
 import { taskReducer } from './taskReducer';
 import { DndContext } from '@dnd-kit/core';
 
@@ -8,8 +8,6 @@ import ViewControls from './Components/ViewControls';
 
 function App() {
 
-  const [inputValue, setInputValue] = useState("");
-  const [dueDate, setDueDate] = useState(null);
   const [filter, setFilter] = useState(localStorage.getItem('filter') || "All");
   const [sortType, setSortType] = useState(localStorage.getItem('sortType') || "Due");
   const [tasks, dispach] = useReducer(taskReducer, [], () => {
@@ -17,7 +15,7 @@ function App() {
     return savedTasks ? JSON.parse(savedTasks) : [];
   })
 
-  const addTask = () => {
+  const addTask = useCallback((inputValue, dueDate) => {
     if (inputValue.trim() === "") {
       alert("Введите задачу");
       return;
@@ -26,38 +24,27 @@ function App() {
       title: inputValue, 
       dueDate 
     }});
-    setInputValue("");
-    setDueDate(null);
     console.log("Добавлено: " + inputValue);
-  }
+  }, [dispach])
 
-  const onChange = (value) => {
-    setInputValue(value);
-  }
-
-  const onChangeDate = (date) => {
-    setDueDate(date);
-    console.log(date)
-  }
-
-  const onDelete = (id) => {
+  const onDelete = useCallback((id) => {
     dispach({type: 'DELETE_TASK', payload: id})
-  }
+    console.log("Deleted: " + id);
+  }, [dispach])
 
-  const clearAll = () => {
+  const clearAll = useCallback(() => {
     const confirmed = window.confirm("Вы точно хотите удалить все задачи?");
     if (confirmed) {
       dispach({type: 'DELETE_ALL'})
       console.log("Все удалено!!!");
     }
-  }
+  }, [dispach])
 
-  const onToggle = (id) => {
+  const onToggle = useCallback((id) => {
   dispach({type: 'TOGGLE_TASK', payload: id})
-  };
+  }, [dispach]);
 
   const handleDragEnd = (event) => {
-    console.log("Drag")
     const { active, over } = event;
 
     if (!over) return; // если не попал ни в какую зону — ничего не делаем
@@ -74,6 +61,7 @@ function App() {
 }
 
     if (toZone === "with-date") {
+      console.log("Drag to zone with date")
       // Пока ничего не делаем, можно позже добавить выбор даты
     }
   };
@@ -92,16 +80,19 @@ function App() {
     localStorage.setItem("sortType", sortType);
   }, [sortType])
 
-  const filteredTasks = tasks.filter(task => {
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
     if (filter === "Completed") return task.completed;
     if (filter === "Active") return !task.completed;
     return true;
   })
+  }, [tasks, filter])
 
-  const filterNoDate = filteredTasks.filter(task => !task.dueDate)
-  const filterOrderDate = filteredTasks.filter(task => task.dueDate)
+  const filterNoDate = useMemo(() => filteredTasks.filter(task => !task.dueDate), [filteredTasks]);
+  const filterOrderDate = useMemo(() => filteredTasks.filter(task => task.dueDate), [filteredTasks]);
 
-  const sortTaskList = [...filterOrderDate].sort((a, b) => {
+  const sortTaskList = useMemo(() => {
+    return [...filterOrderDate].sort((a, b) => {
     if (sortType === "Created") {
       return new Date(a.createdAt) - new Date(b.createdAt);
     }
@@ -109,18 +100,16 @@ function App() {
       return new Date(a.dueDate) - new Date(b.dueDate);
     }
     return 0;
-  })
+    })
+  }, [filterOrderDate, sortType] )
 
+  console.log("Render App")
   return (
     <>
     <h1>Список задач</h1>
     <TaskForm
       clearAll={clearAll} 
-      inputValue={inputValue}
-      dueDate={dueDate} 
       onAdd={addTask} 
-      onChange={onChange} 
-      onChangeDate={onChangeDate}
       />
     <ViewControls
       filter={filter}

@@ -1,5 +1,6 @@
 import Task from "./Task";
 import { useDroppable } from "@dnd-kit/core";
+import React from "react";
 
 const TaskList = ({ tasks, tasksNoDate, onDelete, onToggle }) => {
 
@@ -22,6 +23,8 @@ const NoDateDrop = ({ children }) => {
   // Теперь dnd-kit знает: если задача попадёт в эту зону — это зона "no-date"
   return <div ref={setNodeRef}>{children}</div>;
 };
+
+  console.log("Render TaskList")
   return (
     <div>
       <NoDateDrop>
@@ -53,4 +56,4 @@ const NoDateDrop = ({ children }) => {
   );
 };
 
-export default TaskList;
+export default React.memo(TaskList);

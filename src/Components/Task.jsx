@@ -1,9 +1,11 @@
 import { useDraggable } from "@dnd-kit/core";
+import React from "react";
 
 const Task = ({task, onDelete, onToggle}) => {
     const className = task.completed ? "task completed" : "task";
     const { attributes, listeners, setNodeRef, transform, transition } = useDraggable({ id: task.id });
-  
+
+    // console.log("RenderTask " +task.id)
     return (
     <li className={className} 
     key={task.id}
@@ -98,4 +100,4 @@ const Task = ({task, onDelete, onToggle}) => {
   )
 }
 
-export default Task
+export default React.memo(Task);

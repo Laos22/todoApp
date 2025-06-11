@@ -2,6 +2,8 @@ import React from 'react'
 
 
 const ViewControls = ({filter, setFilter, sortType, setSortType}) => {
+
+  console.log("Render ViewControl")
   return (
     <div className='vieControls' > 
         <div>
@@ -18,4 +20,4 @@ const ViewControls = ({filter, setFilter, sortType, setSortType}) => {
   )
 }
 
-export default ViewControls
+export default React.memo(ViewControls);

@@ -11,7 +11,6 @@ export const taskReducer = (state, action) => {
                 createdAt: new Date().toISOString()
             }];
         case 'DELETE_TASK':
-            console.log("Удаляем задачу - " + action.payload)
             return state.filter(task => task.id !== action.payload);
             
         case 'DELETE_ALL':
