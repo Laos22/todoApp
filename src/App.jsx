@@ -66,6 +66,10 @@ function App() {
     }
   };
 
+  const onEdit = useCallback((id, dueDate, title ) => {
+    dispach({type: "EDIT_TASK", payload: {id, dueDate, title}})
+  }, [dispach])
+
  
 
   useEffect(() => {
@@ -123,6 +127,7 @@ function App() {
           tasks={sortTaskList} 
           onDelete={onDelete} 
           onToggle={onToggle}
+          onEdit={onEdit}
         />
       </DndContext>
     

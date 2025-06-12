@@ -2,7 +2,7 @@ import Task from "./Task";
 import { useDroppable } from "@dnd-kit/core";
 import React from "react";
 
-const TaskList = ({ tasks, tasksNoDate, onDelete, onToggle }) => {
+const TaskList = ({ tasks, tasksNoDate, onDelete, onToggle, onEdit }) => {
 
   // Компонент-зона для задач С ДАТОЙ
 const WithDateDrop = ({ children }) => {
@@ -33,7 +33,7 @@ const NoDateDrop = ({ children }) => {
           <h3>Без даты</h3>
           <ul>
             {tasksNoDate.map((task) => (
-              <Task task={task} onDelete={onDelete} key={task.id} onToggle={onToggle} />
+              <Task task={task} onDelete={onDelete} key={task.id} onToggle={onToggle} onEdit={onEdit} />
             ))}
           </ul>
         </>
@@ -46,7 +46,7 @@ const NoDateDrop = ({ children }) => {
           <h3>С датой</h3>
           <ul>
             {tasks.map((task) => (
-              <Task task={task} onDelete={onDelete} key={task.id} onToggle={onToggle} />
+              <Task task={task} onDelete={onDelete} key={task.id} onToggle={onToggle} onEdit={onEdit}/>
             ))}
           </ul>
         </>

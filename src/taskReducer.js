@@ -10,6 +10,14 @@ export const taskReducer = (state, action) => {
                 dueDate: action.payload.dueDate,
                 createdAt: new Date().toISOString()
             }];
+        case 'EDIT_TASK':
+            return state.map(task => 
+                task.id === action.payload.id ?
+                    {...task,
+                        title: action.payload.title,
+                        dueDate: action.payload.dueDate,
+                    } : task
+            );
         case 'DELETE_TASK':
             return state.filter(task => task.id !== action.payload);
             
