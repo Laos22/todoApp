@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const Task = ({task, onDelete, onToggle, onEdit }) => {
 
@@ -59,7 +59,7 @@ const Task = ({task, onDelete, onToggle, onEdit }) => {
                 <button onClick={() => {
                   setIsEditing(false);
                   setNewTitle(task.title);
-                  setNewDueDate(task.dueDate);
+                  setNewDueDate(task.dueDate || "");
                   }}>Отмена</button>
               </>
             ) : (
@@ -77,9 +77,7 @@ const Task = ({task, onDelete, onToggle, onEdit }) => {
           </div>
 
           <button
-            onClick={() => {
-              setIsEditing(true);
-            }}
+            onClick={() => setIsEditing(prev => !prev)}
             style={{
               backgroundColor: '#1976d2',
               color: 'white',
@@ -112,4 +110,5 @@ const Task = ({task, onDelete, onToggle, onEdit }) => {
     );
 }
 
-export default React.memo(Task);
+
+export default Task;

@@ -1,6 +1,5 @@
 import Task from "./Task";
 import { useDroppable } from "@dnd-kit/core";
-import React from "react";
 
 const TaskList = ({ tasks, tasksNoDate, onDelete, onToggle, onEdit }) => {
 
@@ -56,4 +55,4 @@ const NoDateDrop = ({ children }) => {
   );
 };
 
-export default React.memo(TaskList);
+export default TaskList;
